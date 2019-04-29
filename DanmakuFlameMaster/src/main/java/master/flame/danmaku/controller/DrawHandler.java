@@ -155,6 +155,10 @@ public class DrawHandler extends Handler {
         mDanmakusVisible = danmakuVisibile;
     }
 
+    public void setVideoSpeed(float videoSpeed) {
+        timer.setSpeed(videoSpeed);
+    }
+
     private void bindView(IDanmakuViewController view) {
         this.mDanmakuView = view;
     }

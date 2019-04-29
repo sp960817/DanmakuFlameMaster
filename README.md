@@ -45,7 +45,7 @@ Download the [latest version][1] or grab via Maven:
 <dependency>
   <groupId>com.github.ctiao</groupId>
   <artifactId>dfm</artifactId>
-  <version>0.9.25</version>
+  <version>0.9.26</version>
 </dependency>
 ```
 

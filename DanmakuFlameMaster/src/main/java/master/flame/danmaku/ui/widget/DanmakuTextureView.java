@@ -258,6 +258,14 @@ public class DanmakuTextureView extends TextureView implements IDanmakuView, IDa
     public void showFPS(boolean show) {
         mShowFps = show;
     }
+
+    @Override
+    public void setVideoSpeed(float videoSpeed) {
+        if (handler != null) {
+            handler.setVideoSpeed(videoSpeed);
+        }
+    }
+
     private static final int MAX_RECORD_SIZE = 50;
     private static final int ONE_SECOND = 1000;
     private LinkedList<Long> mDrawTimes;
