@@ -1,30 +1,6 @@
-apply plugin: 'com.android.library'
+apply from: "$rootDir/gradle/lib.gradle"
 
+apply from: "$rootDir/gradle/publish.gradle"
 android {
-    compileSdkVersion 25
-    buildToolsVersion "26.0.2"
-
-    defaultConfig {
-        minSdkVersion 9
-        targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-    sourceSets.main {
-        jniLibs.srcDirs 'src/main/libs'
-        jni.srcDirs = [] // This prevents the auto generation of Android.mk
-    }
-}
-
-if (rootProject.file('gradle/gradle-mvn-push.gradle').exists()) {
-    apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
-}
-if (rootProject.file('gradle/gradle-bintray-upload.gradle').exists()) {
-    apply from: rootProject.file('gradle/gradle-bintray-upload.gradle')
+    namespace 'com.github.fengymi.armv7a'
 }

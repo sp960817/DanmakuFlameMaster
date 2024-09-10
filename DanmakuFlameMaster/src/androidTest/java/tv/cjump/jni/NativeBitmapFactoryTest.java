@@ -1,7 +1,8 @@
 package tv.cjump.jni;
 
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+
 import android.app.ActivityManager;
-import android.app.Instrumentation;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -9,11 +10,13 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Debug;
 import master.flame.danmaku.danmaku.util.SystemClock;
-import android.test.InstrumentationTestCase;
 import android.util.Log;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -21,7 +24,8 @@ import java.util.Locale;
 /**
  * Created by ch on 15-6-12.
  */
-public class NativeBitmapFactoryTest extends InstrumentationTestCase {
+@RunWith(AndroidJUnit4.class)
+public class NativeBitmapFactoryTest {
 
     private static final int DEFAULT_MESSAGE_SIZE = 1024;
     private static final int BYTES_IN_MEGABYTE = 1024 * 1024;
