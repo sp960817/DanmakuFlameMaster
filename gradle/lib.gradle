@@ -4,6 +4,6 @@ apply from: "$rootDir/gradle/base.gradle"
 
 android {
     defaultConfig {
-        consumerProguardFiles "consumer-rules.pro"
+//        consumerProguardFiles "consumer-rules.pro"
     }
 }

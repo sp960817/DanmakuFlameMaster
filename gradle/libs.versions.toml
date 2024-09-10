@@ -56,12 +56,6 @@ android-maven-gradle-plugin = { module = "com.github.dcendents:android-maven-gra
 androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
 gradle-bintray-plugin = { module = "com.jfrog.bintray.gradle:gradle-bintray-plugin", version.ref = "gradleBintrayPlugin" }
 
-# Kotlin
-kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
-kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
-kotlinx-coroutines-guava = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-guava", version.ref = "kotlinx-coroutines" }
-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
-
 # Android(x)
 android-gradle = { module = "com.android.tools.build:gradle", version.ref = "android-gradle" }
 androidx-activity = { module = "androidx.activity:activity", version.ref = "androidx-activity" }
@@ -135,33 +129,33 @@ mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 universal-image-loader = { module = "com.nostra13.universalimageloader:universal-image-loader", version.ref = "universalImageLoader" }
 
 [bundles]
-acra = [
-    "acra-core",
-    "acra-toast",
-]
-androidx-compose = [
-    "androidx-compose-foundation",
-    "androidx-compose-ui-tooling",
-    "androidx-tv-material"
-]
-androidx-lifecycle = [
-    "androidx-lifecycle-process",
-    "androidx-lifecycle-runtime",
-    "androidx-lifecycle-service",
-    "androidx-lifecycle-viewmodel",
-]
-coil = [
-    "coil-base",
-    "coil-gif",
-    "coil-svg",
-]
-koin = [
-    "koin-android-compat",
-    "koin-android-core",
-    "koin-androidx-workmanager",
-    "koin-androidx-compose",
-]
-markwon = [
-    "markwon-core",
-    "markwon-html",
-]
+#acra = [
+#    "acra-core",
+#    "acra-toast",
+#]
+#androidx-compose = [
+#    "androidx-compose-foundation",
+#    "androidx-compose-ui-tooling",
+#    "androidx-tv-material"
+#]
+#androidx-lifecycle = [
+#    "androidx-lifecycle-process",
+#    "androidx-lifecycle-runtime",
+#    "androidx-lifecycle-service",
+#    "androidx-lifecycle-viewmodel",
+#]
+#coil = [
+#    "coil-base",
+#    "coil-gif",
+#    "coil-svg",
+#]
+#koin = [
+#    "koin-android-compat",
+#    "koin-android-core",
+#    "koin-androidx-workmanager",
+#    "koin-androidx-compose",
+#]
+#markwon = [
+#    "markwon-core",
+#    "markwon-html",
+#]
