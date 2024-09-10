@@ -2,7 +2,8 @@ package master.flame.danmaku.gl.glview.view;
 
 import android.content.Context;
 import android.opengl.GLES20;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import java.io.InputStream;
 
