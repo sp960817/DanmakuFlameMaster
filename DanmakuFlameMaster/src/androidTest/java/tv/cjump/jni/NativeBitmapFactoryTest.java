@@ -12,7 +12,7 @@ import android.os.Debug;
 import master.flame.danmaku.danmaku.util.SystemClock;
 import android.util.Log;
 
-import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import junit.framework.Assert;
 
