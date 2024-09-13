@@ -34,8 +34,6 @@ public interface IDanmakuView {
 
     public void showFPS(boolean show);
 
-    void setVideoSpeed(float videoSpeed);
-    
     /**
      * danmaku.isLive == true的情况下,请在非UI线程中使用此方法,避免可能卡住主线程
      * @param item

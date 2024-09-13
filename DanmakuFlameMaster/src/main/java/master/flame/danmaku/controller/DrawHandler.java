@@ -157,10 +157,6 @@ public class DrawHandler extends Handler {
         mDanmakusVisible = danmakuVisibile;
     }
 
-    public void setVideoSpeed(float videoSpeed) {
-        timer.setSpeed(videoSpeed);
-    }
-
     private void bindView(IDanmakuViewController view) {
         this.mDanmakuView = view;
     }
@@ -822,7 +818,7 @@ public class DrawHandler extends Handler {
 
     private synchronized long getAverageRenderingTime() {
         int frames = mDrawTimes.size();
-        if(frames <= 0)
+        if(frames == 0)
             return 0;
         Long first = mDrawTimes.peekFirst();
         Long last = mDrawTimes.peekLast();

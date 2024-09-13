@@ -172,7 +172,7 @@ public class Danmakus implements IDanmakus {
 
     @Override
     public IDanmakus sub(long startTime, long endTime) {
-        if (items == null || items.size() == 0) {
+        if (items == null || items.isEmpty()) {
             return null;
         }
         if (subItems == null) {
