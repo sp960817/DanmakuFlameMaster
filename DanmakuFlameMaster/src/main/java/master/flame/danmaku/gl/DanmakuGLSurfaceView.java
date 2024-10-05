@@ -306,6 +306,13 @@ public class DanmakuGLSurfaceView extends GLHandlerSurfaceView implements IDanma
         mShowFps = show;
     }
 
+    @Override
+    public void setVideoSpeed(float videoSpeed) {
+        if (handler != null) {
+            handler.setVideoSpeed(videoSpeed);
+        }
+    }
+
     private float fps() {
         if (mDrawTimes == null) {
             mDrawTimes = new LinkedList<>();
