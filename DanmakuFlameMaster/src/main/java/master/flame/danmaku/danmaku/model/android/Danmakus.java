@@ -16,6 +16,8 @@
 
 package master.flame.danmaku.danmaku.model.android;
 
+import android.util.Log;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -308,8 +310,12 @@ public class Danmakus implements IDanmakus {
             if (action == DefaultConsumer.ACTION_BREAK) {
                 break;
             } else if (action == DefaultConsumer.ACTION_REMOVE) {
-                it.remove();
-                mSize.decrementAndGet();
+                try {
+                    it.remove();
+                    mSize.decrementAndGet();
+                } catch (Exception e) {
+                    Log.i("Danmakus", "remove error + " + e.getMessage());
+                }
             } else if (action == DefaultConsumer.ACTION_REMOVE_AND_BREAK) {
                 it.remove();
                 mSize.decrementAndGet();

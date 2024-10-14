@@ -43,7 +43,7 @@ public class DanmakuTimer {
         if((lastInterval - curr + lastCurr) > 2000 || (lastInterval - curr + lastCurr) < -2000)
             currMillisecond = curr - firstCurr;
         else
-            currMillisecond += lastInterval * videoSpeed;
+            currMillisecond += (long) (lastInterval * videoSpeed);
 
         lastCurr = curr;
         lastTimeStamp = t;
