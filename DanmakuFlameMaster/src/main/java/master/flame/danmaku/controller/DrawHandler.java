@@ -24,6 +24,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Choreographer;
 
 import java.util.LinkedList;
@@ -885,8 +886,9 @@ public class DrawHandler extends Handler {
             return mDesireSeekingTime;
         }
         if (quitFlag || !mInWaitingState) {
-            return timer.currMillisecond - mRemainingTime;
+            return timer.getCurrMillisecond() - mRemainingTime;
         }
+//        Log.i("jellyfin", "quitFlag:" + quitFlag + ", mInWaitingState=" + mInWaitingState);
         return SystemClock.uptimeMillis() - mTimeBase;
     }
 

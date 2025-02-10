@@ -17,6 +17,9 @@
 package master.flame.danmaku.danmaku.model;
 
 public class DanmakuTimer {
+    public static boolean useOrigin = true;
+    private static long videoTime = -1;
+
     public long currMillisecond = 0L;
     private long lastInterval;
 
@@ -32,7 +35,30 @@ public class DanmakuTimer {
         update(curr);
     }
 
+    /**
+     * 设置外部真正时间
+     */
+    public static void setVideoTime(long videoTime) {
+        DanmakuTimer.videoTime = videoTime;
+    }
+
+    public long getCurrMillisecond() {
+//        if (true && DanmakuTimer.videoTime > 0) {
+//            return videoTime;
+//        }
+
+        if (useOrigin || DanmakuTimer.videoTime < 0) {
+            return currMillisecond;
+        }
+
+        return videoTime;
+    }
+
     public long update(long curr) {
+        if (useOrigin) {
+            return originUpdate(curr);
+        }
+
         if(lastTimeStamp == 0) {
             lastTimeStamp = System.currentTimeMillis();
             firstCurr = curr;
@@ -47,6 +73,12 @@ public class DanmakuTimer {
 
         lastCurr = curr;
         lastTimeStamp = t;
+        return lastInterval;
+    }
+
+    private long originUpdate(long curr) {
+        lastInterval = curr - currMillisecond;
+        currMillisecond = curr;
         return lastInterval;
     }
 
