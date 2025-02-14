@@ -729,6 +729,7 @@ public class DrawHandler extends Handler {
                     if (!isSyncPlayingState && quitFlag) {
                         break;
                     }
+                    // 时间同步
                     int syncState = danmakuSync.getSyncState();
                     if (syncState == AbsDanmakuSync.SYNC_STATE_PLAYING) {
                         long fromTime = timer.currMillisecond;
