@@ -33,20 +33,8 @@ public class DanmakuTimer {
     }
 
     public long update(long curr) {
-        if(lastTimeStamp == 0) {
-            lastTimeStamp = System.currentTimeMillis();
-            firstCurr = curr;
-        }
-        long t = System.currentTimeMillis();
-        lastInterval = t - lastTimeStamp;
-
-        if((lastInterval - curr + lastCurr) > 2000 || (lastInterval - curr + lastCurr) < -2000)
-            currMillisecond = curr - firstCurr;
-        else
-            currMillisecond += lastInterval * videoSpeed;
-
-        lastCurr = curr;
-        lastTimeStamp = t;
+        lastInterval = curr - currMillisecond;
+        currMillisecond = curr;
         return lastInterval;
     }
 
