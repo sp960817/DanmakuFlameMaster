@@ -16,6 +16,8 @@
 
 package master.flame.danmaku.danmaku.model.android;
 
+import android.util.Log;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -29,6 +31,7 @@ import master.flame.danmaku.danmaku.model.Danmaku;
 import master.flame.danmaku.danmaku.model.IDanmakus;
 
 public class Danmakus implements IDanmakus {
+    public static final String TAG = "Danmakus";
 
     public Collection<BaseDanmaku> items;
 
@@ -299,22 +302,26 @@ public class Danmakus implements IDanmakus {
     public void forEach(Consumer<? super BaseDanmaku, ?> consumer) {
         consumer.before();
         Iterator<BaseDanmaku> it = items.iterator();
-        while (it.hasNext()) {
-            BaseDanmaku next = it.next();
-            if (next == null) {
-                continue;
+        try {
+            while (it.hasNext()) {
+                BaseDanmaku next = it.next();
+                if (next == null) {
+                    continue;
+                }
+                int action = consumer.accept(next);
+                if (action == DefaultConsumer.ACTION_BREAK) {
+                    break;
+                } else if (action == DefaultConsumer.ACTION_REMOVE) {
+                    it.remove();
+                    mSize.decrementAndGet();
+                } else if (action == DefaultConsumer.ACTION_REMOVE_AND_BREAK) {
+                    it.remove();
+                    mSize.decrementAndGet();
+                    break;
+                }
             }
-            int action = consumer.accept(next);
-            if (action == DefaultConsumer.ACTION_BREAK) {
-                break;
-            } else if (action == DefaultConsumer.ACTION_REMOVE) {
-                it.remove();
-                mSize.decrementAndGet();
-            } else if (action == DefaultConsumer.ACTION_REMOVE_AND_BREAK) {
-                it.remove();
-                mSize.decrementAndGet();
-                break;
-            }
+        } catch (Exception e) {
+            Log.e(TAG,"danmu forEach error:" + e.getMessage(), e);
         }
         consumer.after();
     }
