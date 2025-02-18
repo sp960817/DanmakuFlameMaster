@@ -1,0 +1,28 @@
+[versions]
+android-compileSdk = "34"
+android-gradle = "8.5.2"
+android-minSdk = "21"
+android-targetSdk = "34"
+androidMavenGradlePlugin = "2.1"
+annotation = "1.8.2"
+gradleBintrayPlugin = "1.7"
+supportAnnotations = "28.0.0"
+universalImageLoader = "1.9.5"
+
+
+[libraries]
+android-maven-gradle-plugin = { module = "com.github.dcendents:android-maven-gradle-plugin", version.ref = "androidMavenGradlePlugin" }
+androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
+gradle-bintray-plugin = { module = "com.jfrog.bintray.gradle:gradle-bintray-plugin", version.ref = "gradleBintrayPlugin" }
+
+# Android(x)
+android-gradle = { module = "com.android.tools.build:gradle", version.ref = "android-gradle" }
+
+# Logging
+support-annotations = { module = "com.android.support:support-annotations", version.ref = "supportAnnotations" }
+
+# Test utilities
+test-junit = { module = "junit:junit", version = '4.13.2' }
+test-runner = { module = "androidx.test:runner", version = '1.6.2' }
+test-espressoCore = { module = "androidx.test.espresso:espresso-core", version = '3.6.1' }
+universal-image-loader = { module = "com.nostra13.universalimageloader:universal-image-loader", version.ref = "universalImageLoader" }

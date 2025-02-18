@@ -1,0 +1,19 @@
+android {
+    compileSdk libs.versions.android.compileSdk.get().toInteger()
+
+    defaultConfig {
+        minSdk libs.versions.android.minSdk.get().toInteger()
+        targetSdk libs.versions.android.compileSdk.get().toInteger()
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildFeatures.buildConfig = false
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar", "*.aar"])
+    implementation libs.androidx.annotation
+
+    testImplementation libs.test.junit
+    androidTestImplementation libs.test.runner
+    androidTestImplementation libs.test.espressoCore
+}

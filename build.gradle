@@ -1,22 +1,26 @@
 buildscript {
     repositories {
-        maven { url "https://repo.grails.org/grails/core/" }
-        maven { url "https://jitpack.io" }
-        jcenter()
         google()
+        gradlePluginPortal()
     }
+
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.4.1'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7'
+        classpath libs.android.gradle
+//        classpath libs.android.maven.gradle.plugin
+//        classpath libs.gradle.bintray.plugin
     }
 }
 
 allprojects {
     repositories {
         maven { url "https://repo.grails.org/grails/core/" }
-        maven { url "https://jitpack.io" }
-        jcenter()
+        maven {
+            url "https://jitpack.io"
+            content {
+                includeVersionByRegex("com.github.*", ".*", ".*")
+            }
+        }
         google()
+        mavenCentral()
     }
 }
