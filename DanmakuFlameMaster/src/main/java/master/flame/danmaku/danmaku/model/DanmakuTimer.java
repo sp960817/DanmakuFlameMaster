@@ -21,11 +21,6 @@ public class DanmakuTimer {
 
     private long lastInterval;
 
-    private float videoSpeed = 1.0f;
-    private long lastTimeStamp = 0L;
-    private long lastCurr;
-    private long firstCurr;
-
     public DanmakuTimer() {
 
     }
@@ -48,11 +43,4 @@ public class DanmakuTimer {
         return lastInterval;
     }
 
-    public void setSpeed(float speed) {
-        videoSpeed = speed;
-    }
-
-    public float getSpeed() {
-        return videoSpeed;
-    }
 }
