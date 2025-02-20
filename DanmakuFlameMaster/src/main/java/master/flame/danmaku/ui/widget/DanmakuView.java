@@ -240,9 +240,9 @@ public class DanmakuView extends View implements IDanmakuView, IDanmakuViewContr
     }
 
     @Override
-    public void setVideoSpeed(float videoSpeed) {
+    public void setVideoSpeed(float videoSpeed, Long currentVideoTime) {
         if (handler != null) {
-            handler.setVideoSpeed(videoSpeed);
+            handler.setVideoSpeed(videoSpeed, currentVideoTime);
         }
     }
 

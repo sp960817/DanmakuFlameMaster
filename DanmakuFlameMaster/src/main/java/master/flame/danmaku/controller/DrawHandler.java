@@ -86,6 +86,8 @@ public class DrawHandler extends Handler {
 
     private static final int FORCE_RENDER = 14;
 
+    private static final int CHANGE_VIDEO_SPEED = 15;
+
     private static final long INDEFINITE_TIME = 10000000;
 
     private long pausedPosition = 0;
@@ -157,8 +159,8 @@ public class DrawHandler extends Handler {
         mDanmakusVisible = danmakuVisibile;
     }
 
-    public void setVideoSpeed(float videoSpeed) {
-        timer.setSpeed(videoSpeed);
+    public void setVideoSpeed(float videoSpeed, long videoTime) {
+        obtainMessage(DrawHandler.CHANGE_VIDEO_SPEED, videoSpeed).sendToTarget();
     }
 
     private void bindView(IDanmakuViewController view) {
@@ -201,8 +203,10 @@ public class DrawHandler extends Handler {
     @Override
     public void handleMessage(Message msg) {
         int what = msg.what;
+//        Log.d("handleMessage", "what=" + what + ", obj=" + msg.obj + ", method=" + (Objects.nonNull(mContext) ? mContext.updateMethod : null));
         switch (what) {
             case PREPARE:
+                SystemClock.reset();
                 mTimeBase = SystemClock.uptimeMillis();
                 if (mParser == null || !mDanmakuView.isViewReady()) {
                     sendEmptyMessageDelayed(PREPARE, 100);
@@ -280,6 +284,7 @@ public class DrawHandler extends Handler {
                 } else {
                     sendEmptyMessageDelayed(RESUME, 100);
                 }
+                SystemClock.setPlaying(true);
                 break;
             case UPDATE:
                 if (mContext.updateMethod == 0) {
@@ -321,6 +326,7 @@ public class DrawHandler extends Handler {
                 if (drawTask != null) {
                     drawTask.onPlayStateChanged(IDrawTask.PLAY_STATE_PAUSE);
                 }
+                SystemClock.setPlaying(false);
             case QUIT:
                 if (what == QUIT) {
                     removeCallbacksAndMessages(null);
@@ -367,6 +373,9 @@ public class DrawHandler extends Handler {
                 if (drawTask != null) {
                     drawTask.requestRender();
                 }
+                break;
+            case CHANGE_VIDEO_SPEED:
+                SystemClock.setVideoSpeed((float) msg.obj);
                 break;
         }
     }
