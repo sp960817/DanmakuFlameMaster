@@ -1,5 +1,9 @@
 package master.flame.danmaku.danmaku.util;
 
+import android.util.Log;
+
+import master.flame.danmaku.danmaku.model.DanmakuTimer;
+
 /**
  * Created by ch on 15-12-9.
  */
@@ -53,7 +57,9 @@ public class SystemClock {
         }
 
         long real = baseTime + a;
-//        Log.d("SystemClock", "基础时间=" + baseTime + ", gap=" + gap + " * ," + videoSpeed + " 计算后gap=" + a + ", 实际=" + real);
+        if (DanmakuTimer.debug) {
+            Log.d("SystemClock", "基础时间=" + baseTime + ", gap=" + gap + " * " + videoSpeed + " 计算后gap=" + a + ", 实际=" + real + ", 弹幕时间 " + DanmakuTimer.formatTime(real) + ", 视频时间 " + DanmakuTimer.formatTime(DanmakuTimer.videoTime));
+        }
         return real;
     }
 

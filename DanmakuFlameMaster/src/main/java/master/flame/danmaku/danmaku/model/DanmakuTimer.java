@@ -16,7 +16,12 @@
 
 package master.flame.danmaku.danmaku.model;
 
+import android.annotation.SuppressLint;
+
 public class DanmakuTimer {
+    public static long videoTime;
+    public static boolean debug;
+
     public long currMillisecond;
 
     private long lastInterval;
@@ -43,4 +48,12 @@ public class DanmakuTimer {
         return lastInterval;
     }
 
+    @SuppressLint("DefaultLocale")
+    public static String formatTime(long time) {
+        long allSecond = time / 1000;
+
+        long second = allSecond % 60;
+        long minute = allSecond / 60;
+        return String.format("%02d:%02d", minute, second);
+    }
 }

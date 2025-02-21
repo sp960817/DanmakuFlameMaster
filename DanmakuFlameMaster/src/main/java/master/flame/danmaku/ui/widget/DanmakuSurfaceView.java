@@ -36,6 +36,7 @@ import master.flame.danmaku.controller.DrawHelper;
 import master.flame.danmaku.controller.IDanmakuView;
 import master.flame.danmaku.controller.IDanmakuViewController;
 import master.flame.danmaku.danmaku.model.BaseDanmaku;
+import master.flame.danmaku.danmaku.model.DanmakuTimer;
 import master.flame.danmaku.danmaku.model.IDanmakus;
 import master.flame.danmaku.danmaku.model.android.DanmakuContext;
 import master.flame.danmaku.danmaku.parser.BaseDanmakuParser;
@@ -294,7 +295,7 @@ public class DanmakuSurfaceView extends SurfaceView implements IDanmakuView, IDa
                         mDrawTimes = new LinkedList<Long>();
                     dtime = SystemClock.uptimeMillis() - stime;
                     String fps = String.format(Locale.getDefault(),
-                            "fps %.2f,time:%d s,cache:%d,miss:%d", fps(), getCurrentTime() / 1000,
+                            "fps %.2f,time:%s, videoTime:%s,cache:%d,miss:%d", fps(), DanmakuTimer.formatTime(getCurrentTime()), DanmakuTimer.formatTime(DanmakuTimer.videoTime),
                             rs.cacheHitCount, rs.cacheMissCount);
                     DrawHelper.drawFPS(canvas, fps);
                 }
