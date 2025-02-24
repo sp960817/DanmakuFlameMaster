@@ -11,12 +11,14 @@ import java.util.Map;
 
 import master.flame.danmaku.controller.DanmakuFilters;
 import master.flame.danmaku.controller.DanmakuFilters.IDanmakuFilter;
+import master.flame.danmaku.controller.DrawHandler;
 import master.flame.danmaku.danmaku.model.AbsDanmakuSync;
 import master.flame.danmaku.danmaku.model.AbsDisplayer;
 import master.flame.danmaku.danmaku.model.AlphaValue;
 import master.flame.danmaku.danmaku.model.BaseDanmaku;
 import master.flame.danmaku.danmaku.model.GlobalFlagValues;
 import master.flame.danmaku.danmaku.model.IDanmakus;
+import master.flame.danmaku.danmaku.util.SystemClock;
 
 public class DanmakuContext implements Cloneable {
 
@@ -396,7 +398,7 @@ public class DanmakuContext implements Cloneable {
     public List<Integer> getColorValueWhiteList(){
         return mColorValueWhiteList;
     }
-    
+
     /**
      * 设置屏蔽弹幕用户hash
      * @param hashes 

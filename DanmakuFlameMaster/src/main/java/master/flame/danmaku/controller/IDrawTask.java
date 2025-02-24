@@ -49,6 +49,7 @@ public interface IDrawTask {
     public void prepare();
 
     public void onPlayStateChanged(int state);
+    public int getPlayState();
 
     public void requestClear();
 

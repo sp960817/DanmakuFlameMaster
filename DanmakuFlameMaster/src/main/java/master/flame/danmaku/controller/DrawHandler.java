@@ -24,6 +24,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Choreographer;
 
 import java.util.LinkedList;
@@ -87,6 +88,10 @@ public class DrawHandler extends Handler {
     private static final int FORCE_RENDER = 14;
 
     private static final int CHANGE_VIDEO_SPEED = 15;
+
+    private static final int SET_OFFSET_TIME = 16;
+
+    private static final int SEEK_TO_TYPE_OFFSET = 2;
 
     private static final long INDEFINITE_TIME = 10000000;
 
@@ -159,8 +164,12 @@ public class DrawHandler extends Handler {
         mDanmakusVisible = danmakuVisibile;
     }
 
-    public void setVideoSpeed(float videoSpeed, long videoTime) {
+    public void setVideoSpeed(float videoSpeed) {
         obtainMessage(DrawHandler.CHANGE_VIDEO_SPEED, videoSpeed).sendToTarget();
+    }
+
+    public void setOffsetTime(int offsetTime) {
+        obtainMessage(DrawHandler.SET_OFFSET_TIME, offsetTime).sendToTarget();
     }
 
     private void bindView(IDanmakuViewController view) {
@@ -199,6 +208,9 @@ public class DrawHandler extends Handler {
     public boolean isStop() {
         return quitFlag;
     }
+
+    private long offsetTime;
+    private long originOffsetTime;
 
     @Override
     public void handleMessage(Message msg) {
@@ -247,23 +259,55 @@ public class DrawHandler extends Handler {
                 }
             case START:
                 Long startTime = (Long) msg.obj;
-                if (startTime != null) {
-                    pausedPosition = startTime;
-                } else {
-                    pausedPosition = 0;
+                startTime = startTime == null ? 0 : startTime;
+                // 偏移为负数，延迟触发
+                if (offsetTime < 0) {
+                    sendMessageDelayed(obtainMessage(DrawHandler.START, startTime), -offsetTime);
+                    break;
                 }
+                pausedPosition = startTime;
             case SEEK_POS:
                 if (what == SEEK_POS) {
+                    Long originPosition = (Long) msg.obj;
+                    if (originPosition == null) {
+                        originPosition = DanmakuTimer.videoTime > 0 ? DanmakuTimer.videoTime : (getCurrentTime() - originOffsetTime);
+                    }
+                    long position = originPosition + offsetTime;
+                    // 偏移为负数，延迟触发
+                    if (position < 0) {
+                        clearDanmakusOnScreen();
+                        Log.d("drawHandler", "弹幕偏移延迟 清除当前弹幕 originPosition=" + DanmakuTimer.formatTime(originPosition) + ", position=" + DanmakuTimer.formatTime(position) + ", videoTime=" + DanmakuTimer.formatTime(DanmakuTimer.videoTime));
+                        sendEmptyMessageDelayed(DrawHandler.SEEK_POS, -position);
+                        break;
+                    }
+
                     quitFlag = true;
                     quitUpdateThread();
-                    Long position = (Long) msg.obj;
-                    long deltaMs = position - timer.currMillisecond;
+                    long deltaMs = position - (timer.currMillisecond);
+                    if (DanmakuTimer.debug) {
+                        Log.d("drawHandler", "进行弹幕偏移 originPosition=" + DanmakuTimer.formatTime(originPosition) + ", position=" + DanmakuTimer.formatTime(position) + ", videoTime=" + DanmakuTimer.formatTime(DanmakuTimer.videoTime) + ", deltaMs=" + deltaMs + ", baseTime=" + mTimeBase + ", timer.currMillisecond=" + timer.currMillisecond + ",getCurrentTime=" + DanmakuTimer.formatTime(getCurrentTime()));
+                    }
                     mTimeBase -= deltaMs;
                     timer.update(position);
                     mContext.mGlobalFlagValues.updateMeasureFlag();
                     if (drawTask != null)
                         drawTask.seek(position);
                     pausedPosition = position;
+
+                    // 如果是设置offset，禁止后续执行，避免视频暂停，弹幕开始渲染
+                    if (SEEK_TO_TYPE_OFFSET == msg.arg1 && IDrawTask.PLAY_STATE_PLAYING != msg.arg2) {
+                        break;
+                    }
+//                    quitFlag = true;
+//                    quitUpdateThread();
+//                    Long position = (Long) msg.obj;
+//                    long deltaMs = position - timer.currMillisecond;
+//                    mTimeBase -= deltaMs;
+//                    timer.update(position);
+//                    mContext.mGlobalFlagValues.updateMeasureFlag();
+//                    if (drawTask != null)
+//                        drawTask.seek(position);
+//                    pausedPosition = position;
                 }
             case RESUME:
                 removeMessages(DrawHandler.PAUSE);
@@ -281,10 +325,10 @@ public class DrawHandler extends Handler {
                     if (drawTask != null) {
                         drawTask.onPlayStateChanged(IDrawTask.PLAY_STATE_PLAYING);
                     }
+                    SystemClock.setPlaying(true);
                 } else {
                     sendEmptyMessageDelayed(RESUME, 100);
                 }
-                SystemClock.setPlaying(true);
                 break;
             case UPDATE:
                 if (mContext.updateMethod == 0) {
@@ -376,6 +420,23 @@ public class DrawHandler extends Handler {
                 break;
             case CHANGE_VIDEO_SPEED:
                 SystemClock.setVideoSpeed((float) msg.obj);
+                break;
+            case SET_OFFSET_TIME:
+                long newOffsetTime = (int) msg.obj * 1000L;
+                if (newOffsetTime != offsetTime) {
+                    originOffsetTime = offsetTime;
+                    offsetTime = newOffsetTime;
+
+                    long currentPosition = DanmakuTimer.videoTime > 0 ? DanmakuTimer.videoTime : getCurrentTime() - originOffsetTime;
+                    if (DanmakuTimer.debug) {
+                        Log.d("drawHandler", "设置弹幕偏移 originOffsetTime=" + originOffsetTime + ", offsetTime=" + offsetTime + ", current=" + DanmakuTimer.formatTime(currentPosition) + ", videoTime=" + DanmakuTimer.formatTime(DanmakuTimer.videoTime));
+                    }
+                    // 触发时间弹幕偏移
+                    int playState = drawTask != null ? drawTask.getPlayState() : 0;
+                    // 先暂停
+                    pause();
+                    seekToWithArg(currentPosition, SEEK_TO_TYPE_OFFSET, playState);
+                }
                 break;
         }
     }
@@ -650,13 +711,20 @@ public class DrawHandler extends Handler {
         return task;
     }
 
-    public void seekTo(Long ms) {
+    private void seekToWithArg(Long ms, int arg1, int arg2) {
         mInSeekingAction = true;
         mDesireSeekingTime = ms;
         removeMessages(DrawHandler.UPDATE);
         removeMessages(DrawHandler.RESUME);
         removeMessages(DrawHandler.SEEK_POS);
-        obtainMessage(DrawHandler.SEEK_POS, ms).sendToTarget();
+        Message message = obtainMessage(DrawHandler.SEEK_POS, ms);
+        message.arg1 = arg1;
+        message.arg2 = arg2;
+        message.sendToTarget();
+    }
+
+    public void seekTo(Long ms) {
+        seekToWithArg(ms, 0, 0);
     }
 
     public void addDanmaku(BaseDanmaku item) {

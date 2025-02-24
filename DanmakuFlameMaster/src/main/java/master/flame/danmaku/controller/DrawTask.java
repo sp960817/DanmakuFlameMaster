@@ -322,6 +322,11 @@ public class DrawTask implements IDrawTask {
         mPlayState = state;
     }
 
+    @Override
+    public int getPlayState() {
+        return mPlayState;
+    }
+
     protected void loadDanmakus(BaseDanmakuParser parser) {
         danmakuList = parser.setConfig(mContext).setDisplayer(mDisp).setTimer(mTimer).setListener(new BaseDanmakuParser.Listener() {
             @Override

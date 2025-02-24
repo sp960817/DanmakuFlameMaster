@@ -34,7 +34,13 @@ public interface IDanmakuView {
 
     public void showFPS(boolean show);
 
-    void setVideoSpeed(float videoSpeed, Long currentVideoTime);
+    void setVideoSpeed(float videoSpeed);
+
+    /**
+     * 时间偏移秒数
+     * @param offsetTime 偏移时间
+     */
+    void setOffsetTime(int offsetTime);
     
     /**
      * danmaku.isLive == true的情况下,请在非UI线程中使用此方法,避免可能卡住主线程
