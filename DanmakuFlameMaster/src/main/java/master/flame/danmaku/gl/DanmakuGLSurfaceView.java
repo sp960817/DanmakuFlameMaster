@@ -307,9 +307,16 @@ public class DanmakuGLSurfaceView extends GLHandlerSurfaceView implements IDanma
     }
 
     @Override
-    public void setVideoSpeed(float videoSpeed, Long currentVideoTime) {
+    public void setVideoSpeed(float videoSpeed) {
         if (handler != null) {
-            handler.setVideoSpeed(videoSpeed, currentVideoTime);
+            handler.setVideoSpeed(videoSpeed);
+        }
+    }
+
+    @Override
+    public void setOffsetTime(int offsetTime) {
+        if (handler != null) {
+            handler.setOffsetTime(offsetTime);
         }
     }
 

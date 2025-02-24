@@ -1,5 +1,9 @@
 package master.flame.danmaku.danmaku.util;
 
+import android.util.Log;
+
+import master.flame.danmaku.danmaku.model.DanmakuTimer;
+
 /**
  * Created by ch on 15-12-9.
  */
@@ -8,6 +12,11 @@ public class SystemClock {
      * 使用系统时间类计算流逝时间
      */
     public static boolean useSystemClock = false;
+
+    /**
+     * 时间偏移
+     */
+    private static int offsetTime;
 
     /**
      * 视频播放速度
@@ -45,6 +54,7 @@ public class SystemClock {
      * 根据视频时间计算流逝时间
      * @return 流逝时间
      */
+    private static long index = 0;
     private static long calcVideoBaseTime() {
         long gap = baseUptimeMillis() - lastSystemClockTimeMillis;
         long a = gap;
@@ -52,8 +62,11 @@ public class SystemClock {
             a = (long) ((gap) * videoSpeed);
         }
 
-        long real = baseTime + a;
-//        Log.d("SystemClock", "基础时间=" + baseTime + ", gap=" + gap + " * ," + videoSpeed + " 计算后gap=" + a + ", 实际=" + real);
+        long real = baseTime + a + offsetTime;
+        if (DanmakuTimer.debug && baseUptimeMillis() / 10_000 != index) {
+            index = baseUptimeMillis() / 10_000;
+            Log.d("SystemClock", "基础时间=" + baseTime + ", gap=" + gap + " * " + videoSpeed + " 计算后gap=" + a + ", 实际=" + real + ", offsetTime=" + offsetTime + ", 弹幕时间 " + DanmakuTimer.formatTime(real) + ", 视频时间 " + DanmakuTimer.formatTime(DanmakuTimer.videoTime));
+        }
         return real;
     }
 
@@ -73,6 +86,15 @@ public class SystemClock {
         baseTime = baseUptimeMillis();
         lastSystemClockTimeMillis = baseTime;
     }
+//
+//    public static void reset(int offsetTime) {
+//        reset();
+//        setOffsetTime(offsetTime);
+//    }
+//
+//    public static void setOffsetTime(int offsetTime) {
+//        SystemClock.offsetTime = offsetTime * 1000;
+//    }
 
     /**
      * 修改视频速度

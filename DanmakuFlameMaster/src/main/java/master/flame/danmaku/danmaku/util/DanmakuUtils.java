@@ -20,6 +20,7 @@ import android.text.TextUtils;
 
 import master.flame.danmaku.danmaku.model.AbsDisplayer;
 import master.flame.danmaku.danmaku.model.BaseDanmaku;
+import master.flame.danmaku.danmaku.model.DanmakuTimer;
 import master.flame.danmaku.danmaku.model.IDisplayer;
 import master.flame.danmaku.danmaku.model.IDrawingCache;
 import master.flame.danmaku.danmaku.model.android.DrawingCache;
@@ -178,7 +179,15 @@ public class DanmakuUtils {
 
     public static void fillText(BaseDanmaku danmaku, CharSequence text) {
         danmaku.text = text;
-        if (TextUtils.isEmpty(text) || !text.toString().contains(BaseDanmaku.DANMAKU_BR_CHAR)) {
+        if (TextUtils.isEmpty(text)) {
+            return;
+        }
+        // 调试显示弹幕时间
+        if (DanmakuTimer.debug) {
+            danmaku.text = DanmakuTimer.formatTime(danmaku.time) + " " + danmaku.text;
+        }
+
+        if (!text.toString().contains(BaseDanmaku.DANMAKU_BR_CHAR)) {
             return;
         }
 
