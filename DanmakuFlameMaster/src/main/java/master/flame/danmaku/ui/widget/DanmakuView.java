@@ -248,6 +248,13 @@ public class DanmakuView extends View implements IDanmakuView, IDanmakuViewContr
     }
 
     @Override
+    public void setDynamicallyAdjustSpeed(boolean dynamicallyAdjustSpeed) {
+        if (handler != null) {
+            handler.setDynamicallyAdjustSpeed(dynamicallyAdjustSpeed);
+        }
+    }
+
+    @Override
     public void setOffsetTime(int offsetTime) {
         if (handler != null) {
             handler.setOffsetTime(offsetTime);

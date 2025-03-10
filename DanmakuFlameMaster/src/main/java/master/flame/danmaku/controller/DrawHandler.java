@@ -152,6 +152,9 @@ public class DrawHandler extends Handler {
 
     private boolean mNonBlockModeEnable;
 
+    private boolean dynamicallyAdjustSpeed;
+    private final DanmuVideoSync danmuVideoSync;
+
     public DrawHandler(Looper looper, IDanmakuViewController view, boolean danmakuVisibile) {
         super(looper);
         mIdleSleep = !DeviceUtils.isProblemBoxDevice();
@@ -162,10 +165,24 @@ public class DrawHandler extends Handler {
             hideDanmakus(false);
         }
         mDanmakusVisible = danmakuVisibile;
+        danmuVideoSync = new DanmuVideoSync(this);
     }
 
     public void setVideoSpeed(float videoSpeed) {
-        obtainMessage(DrawHandler.CHANGE_VIDEO_SPEED, videoSpeed).sendToTarget();
+        if (dynamicallyAdjustSpeed) {
+            danmuVideoSync.setVideoSpeed(videoSpeed);
+            return;
+        }
+        setDanmuSpeed(videoSpeed);
+    }
+
+    public void setDanmuSpeed(float danmuSpeed) {
+        obtainMessage(DrawHandler.CHANGE_VIDEO_SPEED, danmuSpeed).sendToTarget();
+    }
+
+    public void setDynamicallyAdjustSpeed(boolean dynamicallyAdjustSpeed) {
+        this.dynamicallyAdjustSpeed = dynamicallyAdjustSpeed;
+        danmuVideoSync.setDynamicallyAdjustSpeed(dynamicallyAdjustSpeed);
     }
 
     public void setOffsetTime(int offsetTime) {

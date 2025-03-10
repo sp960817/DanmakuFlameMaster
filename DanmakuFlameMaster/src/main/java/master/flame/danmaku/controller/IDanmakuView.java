@@ -36,6 +36,8 @@ public interface IDanmakuView {
 
     void setVideoSpeed(float videoSpeed);
 
+    void setDynamicallyAdjustSpeed(boolean dynamicallyAdjustSpeed);
+
     /**
      * 时间偏移秒数
      * @param offsetTime 偏移时间

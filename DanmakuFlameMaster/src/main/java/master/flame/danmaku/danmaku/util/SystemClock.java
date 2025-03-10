@@ -2,6 +2,8 @@ package master.flame.danmaku.danmaku.util;
 
 import android.util.Log;
 
+import java.util.Timer;
+
 import master.flame.danmaku.danmaku.model.DanmakuTimer;
 
 /**
@@ -12,11 +14,6 @@ public class SystemClock {
      * 使用系统时间类计算流逝时间
      */
     public static boolean useSystemClock = false;
-
-    /**
-     * 时间偏移
-     */
-    private static int offsetTime;
 
     /**
      * 视频播放速度
@@ -62,10 +59,10 @@ public class SystemClock {
             a = (long) ((gap) * videoSpeed);
         }
 
-        long real = baseTime + a + offsetTime;
+        long real = baseTime + a;
         if (DanmakuTimer.debug && baseUptimeMillis() / 10_000 != index) {
             index = baseUptimeMillis() / 10_000;
-            Log.d("SystemClock", "基础时间=" + baseTime + ", gap=" + gap + " * " + videoSpeed + " 计算后gap=" + a + ", 实际=" + real + ", offsetTime=" + offsetTime + ", 弹幕时间 " + DanmakuTimer.formatTime(real) + ", 视频时间 " + DanmakuTimer.formatTime(DanmakuTimer.videoTime));
+            Log.d("SystemClock", "基础时间=" + baseTime + ", gap=" + gap + " * " + videoSpeed + " 计算后gap=" + a + ", 实际=" + real + ", 弹幕时间 " + DanmakuTimer.formatTime(real) + ", 视频时间 " + DanmakuTimer.formatTime(DanmakuTimer.videoTime));
         }
         return real;
     }
