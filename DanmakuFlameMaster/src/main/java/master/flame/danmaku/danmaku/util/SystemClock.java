@@ -2,8 +2,6 @@ package master.flame.danmaku.danmaku.util;
 
 import android.util.Log;
 
-import java.util.Timer;
-
 import master.flame.danmaku.danmaku.model.DanmakuTimer;
 
 /**
@@ -97,8 +95,12 @@ public class SystemClock {
      * 修改视频速度
      * @param videoSpeed 视频速度
      */
-    public static void setVideoSpeed(float videoSpeed) {
+    public static void setSpeed(float videoSpeed) {
         reset();
         SystemClock.videoSpeed = videoSpeed;
+    }
+
+    public static float getVideoSpeed() {
+        return videoSpeed;
     }
 }

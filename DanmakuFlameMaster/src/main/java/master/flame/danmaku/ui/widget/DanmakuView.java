@@ -209,8 +209,10 @@ public class DanmakuView extends View implements IDanmakuView, IDanmakuViewContr
     }
 
     private void prepare() {
-        if (handler == null)
+        if (handler == null) {
             handler = new DrawHandler(getLooper(mDrawingThreadType), this, mDanmakuVisible);
+            executeAfterHandlerInit(handler);
+        }
     }
 
     @Override
@@ -241,9 +243,11 @@ public class DanmakuView extends View implements IDanmakuView, IDanmakuViewContr
     }
 
     @Override
-    public void setVideoSpeed(float videoSpeed) {
+    public void setVideoSpeed(float videoSpeed, Boolean dynamicallyAdjustSpeed) {
         if (handler != null) {
-            handler.setVideoSpeed(videoSpeed);
+            handler.setVideoSpeed(videoSpeed, dynamicallyAdjustSpeed);
+        } else {
+            addAfterHandlerInit(handler -> handler.setVideoSpeed(videoSpeed, dynamicallyAdjustSpeed));
         }
     }
 
@@ -251,6 +255,8 @@ public class DanmakuView extends View implements IDanmakuView, IDanmakuViewContr
     public void setDynamicallyAdjustSpeed(boolean dynamicallyAdjustSpeed) {
         if (handler != null) {
             handler.setDynamicallyAdjustSpeed(dynamicallyAdjustSpeed);
+        } else {
+            addAfterHandlerInit(handler -> handler.setDynamicallyAdjustSpeed(dynamicallyAdjustSpeed));
         }
     }
 
@@ -350,8 +356,8 @@ public class DanmakuView extends View implements IDanmakuView, IDanmakuViewContr
                     if (mDrawTimes == null)
                         mDrawTimes = new LinkedList<Long>();
                     String fps = String.format(Locale.getDefault(),
-                            "fps %.2f,time:%s, videoTime:%s,cache:%d,miss:%d", fps(), DanmakuTimer.formatTime(getCurrentTime()), DanmakuTimer.formatTime(DanmakuTimer.videoTime),
-                            rs.cacheHitCount, rs.cacheMissCount);
+                            "fps %.2f,time:%s, videoTime:%s,cache:%d,miss:%d, speed:%.3f", fps(), DanmakuTimer.formatTime(getCurrentTime()), DanmakuTimer.formatTime(DanmakuTimer.videoTime),
+                            rs.cacheHitCount, rs.cacheMissCount, SystemClock.getVideoSpeed());
                     DrawHelper.drawFPS(canvas, fps);
                 }
             }

@@ -152,7 +152,6 @@ public class DrawHandler extends Handler {
 
     private boolean mNonBlockModeEnable;
 
-    private boolean dynamicallyAdjustSpeed;
     private final DanmuVideoSync danmuVideoSync;
 
     public DrawHandler(Looper looper, IDanmakuViewController view, boolean danmakuVisibile) {
@@ -168,7 +167,13 @@ public class DrawHandler extends Handler {
         danmuVideoSync = new DanmuVideoSync(this);
     }
 
-    public void setVideoSpeed(float videoSpeed) {
+    public void setVideoSpeed(float videoSpeed, Boolean dynamicallyAdjustSpeed) {
+        if (dynamicallyAdjustSpeed == null) {
+            danmuVideoSync.setVideoSpeed(videoSpeed);
+            return;
+        }
+
+        danmuVideoSync.setDynamicallyAdjustSpeed(dynamicallyAdjustSpeed);
         if (dynamicallyAdjustSpeed) {
             danmuVideoSync.setVideoSpeed(videoSpeed);
             return;
@@ -181,7 +186,6 @@ public class DrawHandler extends Handler {
     }
 
     public void setDynamicallyAdjustSpeed(boolean dynamicallyAdjustSpeed) {
-        this.dynamicallyAdjustSpeed = dynamicallyAdjustSpeed;
         danmuVideoSync.setDynamicallyAdjustSpeed(dynamicallyAdjustSpeed);
     }
 
@@ -236,6 +240,7 @@ public class DrawHandler extends Handler {
         switch (what) {
             case PREPARE:
                 SystemClock.reset();
+                danmuVideoSync.reset(DanmuVideoSync.START);
                 mTimeBase = SystemClock.uptimeMillis();
                 if (mParser == null || !mDanmakuView.isViewReady()) {
                     sendEmptyMessageDelayed(PREPARE, 100);
@@ -292,11 +297,14 @@ public class DrawHandler extends Handler {
                     long position = originPosition + offsetTime;
                     // 偏移为负数，延迟触发
                     if (position < 0) {
+                        danmuVideoSync.quit();
+
                         clearDanmakusOnScreen();
                         Log.d("drawHandler", "弹幕偏移延迟 清除当前弹幕 originPosition=" + DanmakuTimer.formatTime(originPosition) + ", position=" + DanmakuTimer.formatTime(position) + ", videoTime=" + DanmakuTimer.formatTime(DanmakuTimer.videoTime));
                         sendEmptyMessageDelayed(DrawHandler.SEEK_POS, -position);
                         break;
                     }
+                    danmuVideoSync.reset(DanmuVideoSync.SEEK);
 
                     quitFlag = true;
                     quitUpdateThread();
@@ -343,6 +351,7 @@ public class DrawHandler extends Handler {
                         drawTask.onPlayStateChanged(IDrawTask.PLAY_STATE_PLAYING);
                     }
                     SystemClock.setPlaying(true);
+                    danmuVideoSync.reset(DanmuVideoSync.RESUME);
                 } else {
                     sendEmptyMessageDelayed(RESUME, 100);
                 }
@@ -374,6 +383,7 @@ public class DrawHandler extends Handler {
                     this.drawTask.requestClear();
                     this.drawTask.requestHide();
                 }
+                danmuVideoSync.quit();
                 Boolean quitDrawTask = (Boolean) msg.obj;
                 if (quitDrawTask && this.drawTask != null) {
                     this.drawTask.quit();
@@ -414,6 +424,7 @@ public class DrawHandler extends Handler {
                     if (this.getLooper() != Looper.getMainLooper())
                         this.getLooper().quit();
                 }
+                danmuVideoSync.quit();
                 break;
             case NOTIFY_RENDERING:
                 notifyRendering();
@@ -436,7 +447,7 @@ public class DrawHandler extends Handler {
                 }
                 break;
             case CHANGE_VIDEO_SPEED:
-                SystemClock.setVideoSpeed((float) msg.obj);
+                SystemClock.setSpeed((float) msg.obj);
                 break;
             case SET_OFFSET_TIME:
                 long newOffsetTime = (int) msg.obj * 1000L;

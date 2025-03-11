@@ -271,6 +271,7 @@ public class DanmakuGLSurfaceView extends GLHandlerSurfaceView implements IDanma
             setRenderer(mRenderer, looper);
             setRenderMode(GLHandlerSurfaceView.RENDERMODE_WHEN_DIRTY);
             handler = new DrawHandler(looper, this, mDanmakuVisible);
+            executeAfterHandlerInit(handler);
             if (DEBUG) {
                 Log.d(TAG, "prepare");
             }
@@ -307,9 +308,20 @@ public class DanmakuGLSurfaceView extends GLHandlerSurfaceView implements IDanma
     }
 
     @Override
-    public void setVideoSpeed(float videoSpeed) {
+    public void setVideoSpeed(float videoSpeed, Boolean dynamicallyAdjustSpeed) {
         if (handler != null) {
-            handler.setVideoSpeed(videoSpeed);
+            handler.setVideoSpeed(videoSpeed, dynamicallyAdjustSpeed);
+        } else {
+            addAfterHandlerInit(handler -> handler.setVideoSpeed(videoSpeed, dynamicallyAdjustSpeed));
+        }
+    }
+
+    @Override
+    public void setDynamicallyAdjustSpeed(boolean dynamicallyAdjustSpeed) {
+        if (handler != null) {
+            handler.setDynamicallyAdjustSpeed(dynamicallyAdjustSpeed);
+        } else {
+            addAfterHandlerInit(handler -> handler.setDynamicallyAdjustSpeed(dynamicallyAdjustSpeed));
         }
     }
 

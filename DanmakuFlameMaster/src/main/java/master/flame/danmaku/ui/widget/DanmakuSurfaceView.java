@@ -223,8 +223,10 @@ public class DanmakuSurfaceView extends SurfaceView implements IDanmakuView, IDa
     }
 
     private void prepare() {
-        if (handler == null)
+        if (handler == null) {
             handler = new DrawHandler(getLooper(mDrawingThreadType), this, mDanmakuVisible);
+            executeAfterHandlerInit(handler);
+        }
     }
 
     @Override
@@ -255,9 +257,11 @@ public class DanmakuSurfaceView extends SurfaceView implements IDanmakuView, IDa
     }
 
     @Override
-    public void setVideoSpeed(float videoSpeed) {
+    public void setVideoSpeed(float videoSpeed, Boolean dynamicallyAdjustSpeed) {
         if (handler != null) {
-            handler.setVideoSpeed(videoSpeed);
+            handler.setVideoSpeed(videoSpeed, dynamicallyAdjustSpeed);
+        } else {
+            addAfterHandlerInit(handler -> handler.setVideoSpeed(videoSpeed, dynamicallyAdjustSpeed));
         }
     }
 
@@ -265,6 +269,8 @@ public class DanmakuSurfaceView extends SurfaceView implements IDanmakuView, IDa
     public void setDynamicallyAdjustSpeed(boolean dynamicallyAdjustSpeed) {
         if (handler != null) {
             handler.setDynamicallyAdjustSpeed(dynamicallyAdjustSpeed);
+        } else {
+            addAfterHandlerInit(handler -> handler.setDynamicallyAdjustSpeed(dynamicallyAdjustSpeed));
         }
     }
 

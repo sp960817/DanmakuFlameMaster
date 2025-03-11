@@ -3,6 +3,9 @@ package master.flame.danmaku.controller;
 
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import master.flame.danmaku.controller.DrawHandler.Callback;
 import master.flame.danmaku.danmaku.model.BaseDanmaku;
 import master.flame.danmaku.danmaku.model.IDanmakus;
@@ -10,7 +13,11 @@ import master.flame.danmaku.danmaku.model.android.DanmakuContext;
 import master.flame.danmaku.danmaku.parser.BaseDanmakuParser;
 
 public interface IDanmakuView {
-    
+    List<AfterDrawHandlerCall> afterHandlerCall = new ArrayList<>();
+    interface AfterDrawHandlerCall {
+        void handlerCall(DrawHandler drawHandler);
+    }
+
     public final static int THREAD_TYPE_NORMAL_PRIORITY = 0x0;
     public final static int THREAD_TYPE_MAIN_THREAD = 0x1;
     public final static int THREAD_TYPE_HIGH_PRIORITY = 0x2;
@@ -34,7 +41,30 @@ public interface IDanmakuView {
 
     public void showFPS(boolean show);
 
-    void setVideoSpeed(float videoSpeed);
+    default void setVideoSpeed(float videoSpeed) {
+        setVideoSpeed(videoSpeed, false);
+    }
+
+    /**
+     * 修改视频速度和是否开启速度自动调整
+     * @param videoSpeed 视频速度
+     * @param dynamicallyAdjustSpeed null-不修改原有设置, true-开启, false-关闭
+     */
+    void setVideoSpeed(float videoSpeed, Boolean dynamicallyAdjustSpeed);
+
+    default void executeAfterHandlerInit(DrawHandler drawHandler) {
+        // 全局唯一
+        synchronized (IDanmakuView.class) {
+            for (AfterDrawHandlerCall afterDrawHandlerCall : afterHandlerCall) {
+                afterDrawHandlerCall.handlerCall(drawHandler);
+            }
+            afterHandlerCall.clear();
+        }
+    }
+
+    default void addAfterHandlerInit(AfterDrawHandlerCall afterDrawHandlerCall) {
+        afterHandlerCall.add(afterDrawHandlerCall);
+    }
 
     void setDynamicallyAdjustSpeed(boolean dynamicallyAdjustSpeed);
 
